@@ -24,6 +24,7 @@
 ```cpp
 struct Bastav {
     std::string role     = "student dev ✿";
+    int         age      = 18;
     std::string mains[2] = {"Python 🐍", "C++ ⚡"};
     std::string vibe     = "anime + gaming 🎮";
     std::string goal     = "build cute, fast little things ♡";
