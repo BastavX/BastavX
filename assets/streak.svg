@@ -3,17 +3,17 @@
   <line x1="165" y1="40" x2="165" y2="155" stroke="#C77DFF" stroke-opacity=".5"/>
   <line x1="330" y1="40" x2="330" y2="155" stroke="#C77DFF" stroke-opacity=".5"/>
   
-  <text x="82.5" y="88" text-anchor="middle" font-size="30" font-weight="700" fill="#F8E8F0">8</text>
+  <text x="82.5" y="88" text-anchor="middle" font-size="30" font-weight="700" fill="#F8E8F0">4</text>
   <text x="82.5" y="122" text-anchor="middle" font-size="14" fill="#4FD1E8">Total Contributions</text>
   <text x="82.5" y="145" text-anchor="middle" font-size="11" fill="#C77DFF">Nov 23 - Present</text>
   <circle cx="247.5" cy="78" r="38" fill="none" stroke="#FF5FA2" stroke-width="5"/>
   <text x="247.5" y="36" text-anchor="middle" font-size="18">🔥</text>
-  <text x="247.5" y="88" text-anchor="middle" font-size="30" font-weight="700" fill="#F8E8F0">2</text>
+  <text x="247.5" y="88" text-anchor="middle" font-size="30" font-weight="700" fill="#F8E8F0">0</text>
   <text x="247.5" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#FF5FA2">Current Streak</text>
-  <text x="247.5" y="165" text-anchor="middle" font-size="11" fill="#C77DFF">Nov 23 - Present</text>
+  <text x="247.5" y="165" text-anchor="middle" font-size="11" fill="#C77DFF">no streak yet</text>
   
-  <text x="412.5" y="88" text-anchor="middle" font-size="30" font-weight="700" fill="#F8E8F0">2</text>
+  <text x="412.5" y="88" text-anchor="middle" font-size="30" font-weight="700" fill="#F8E8F0">1</text>
   <text x="412.5" y="122" text-anchor="middle" font-size="14" fill="#4FD1E8">Longest Streak</text>
-  <text x="412.5" y="145" text-anchor="middle" font-size="11" fill="#C77DFF">Nov 23 - Present</text>
-  <text x="485" y="187" text-anchor="end" font-size="9" fill="#C77DFF" fill-opacity=".6">updated Nov 24</text>
+  <text x="412.5" y="145" text-anchor="middle" font-size="11" fill="#C77DFF">Nov 23</text>
+  <text x="485" y="187" text-anchor="end" font-size="9" fill="#C77DFF" fill-opacity=".6">updated Nov 25</text>
 </svg>
