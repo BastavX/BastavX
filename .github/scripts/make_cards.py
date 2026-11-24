@@ -35,22 +35,72 @@ def gql(query, **variables):
 
 
 # ---------------------------------------------------------------- data
-def contribution_days(created_at):
-    days = {}
+def contribution_days(created_at, user_id):
+    days, seen_private = {}, {}  # seen_private: private commits the calendar already shows
     start = created_at
     now = dt.datetime.now(dt.timezone.utc)
     while start < now:
         end = min(start + dt.timedelta(days=365), now)
         data = gql(
             """query($from: DateTime!, $to: DateTime!) { viewer { contributionsCollection(from: $from, to: $to) {
-                 contributionCalendar { weeks { contributionDays { date contributionCount } } } } } }""",
+                 contributionCalendar { weeks { contributionDays { date contributionCount } } }
+                 commitContributionsByRepository(maxRepositories: 100) { repository { isPrivate }
+                   contributions(first: 100) { nodes { occurredAt commitCount } } } } } }""",
             **{"from": start.isoformat(), "to": end.isoformat()},
         )
-        for w in data["viewer"]["contributionsCollection"]["contributionCalendar"]["weeks"]:
+        cc = data["viewer"]["contributionsCollection"]
+        for w in cc["contributionCalendar"]["weeks"]:
             for d in w["contributionDays"]:
                 days[dt.date.fromisoformat(d["date"])] = d["contributionCount"]
+        for repo in cc["commitContributionsByRepository"]:
+            if repo["repository"]["isPrivate"]:
+                for n in repo["contributions"]["nodes"]:
+                    day = dt.date.fromisoformat(n["occurredAt"][:10])
+                    seen_private[day] = seen_private.get(day, 0) + n["commitCount"]
         start = end
+
+    # A fine-grained token can't see private contributions in the calendar,
+    # but it can read private repos' commit history. Add whatever is missing.
+    for day, n in private_commits(created_at, user_id).items():
+        missing = n - seen_private.get(day, 0)
+        if missing > 0:
+            days[day] = days.get(day, 0) + missing
     return days
+
+
+def private_commits(since, user_id):
+    per_day, repo_cursor = {}, None
+    while True:
+        data = gql(
+            """query($after: String) { viewer { repositories(first: 50, after: $after, ownerAffiliations: OWNER, privacy: PRIVATE) {
+                 pageInfo { hasNextPage endCursor } nodes { nameWithOwner } } } }""",
+            after=repo_cursor,
+        )
+        repos = data["viewer"]["repositories"]
+        for r in repos["nodes"]:
+            owner, name = r["nameWithOwner"].split("/")
+            cursor = None
+            while True:
+                h = gql(
+                    """query($o: String!, $n: String!, $id: ID!, $since: GitTimestamp!, $after: String) {
+                         repository(owner: $o, name: $n) { defaultBranchRef { target { ... on Commit {
+                           history(first: 100, after: $after, since: $since, author: {id: $id}) {
+                             pageInfo { hasNextPage endCursor } nodes { authoredDate } } } } } } }""",
+                    o=owner, n=name, id=user_id, since=since.isoformat(), after=cursor,
+                )
+                ref = h["repository"]["defaultBranchRef"]
+                if not ref:
+                    break  # empty repo
+                hist = ref["target"]["history"]
+                for c in hist["nodes"]:
+                    t = dt.datetime.fromisoformat(c["authoredDate"].replace("Z", "+00:00")) + TZ_OFFSET
+                    per_day[t.date()] = per_day.get(t.date(), 0) + 1
+                if not hist["pageInfo"]["hasNextPage"]:
+                    break
+                cursor = hist["pageInfo"]["endCursor"]
+        if not repos["pageInfo"]["hasNextPage"]:
+            return per_day
+        repo_cursor = repos["pageInfo"]["endCursor"]
 
 
 def streaks(days):
@@ -167,10 +217,10 @@ def langs_svg(totals):
 
 
 def main():
-    created = gql("{ viewer { createdAt } }")["viewer"]["createdAt"]
-    created = dt.datetime.fromisoformat(created.replace("Z", "+00:00"))
+    me = gql("{ viewer { id createdAt } }")["viewer"]
+    created = dt.datetime.fromisoformat(me["createdAt"].replace("Z", "+00:00"))
     os.makedirs("assets", exist_ok=True)
-    s = streaks(contribution_days(created))
+    s = streaks(contribution_days(created, me["id"]))
     with open("assets/streak.svg", "w", encoding="utf-8") as f:
         f.write(streak_svg(*s))
     t = languages()
