@@ -51,11 +51,11 @@ struct Bastav {
 
 <p align="center">
   <img height="165" src="https://github-readme-stats.vercel.app/api?username=BastavX&show_icons=true&hide_border=true&border_radius=12&bg_color=1A1B2E&title_color=FF5FA2&icon_color=4FD1E8&text_color=F8E8F0&ring_color=FF5FA2&custom_title=%E2%99%A1%20player%20stats" alt="stats"/>
-  <img height="165" src="https://streak-stats.demolab.com?user=BastavX&hide_border=true&border_radius=12&background=1A1B2E&ring=FF5FA2&fire=4FD1E8&currStreakLabel=FF5FA2&sideLabels=4FD1E8&currStreakNum=F8E8F0&sideNums=F8E8F0&dates=C77DFF&stroke=C77DFF" alt="streak"/>
+  <img height="165" src="assets/streak.svg" alt="streak"/>
 </p>
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=BastavX&layout=compact&hide_border=true&border_radius=12&bg_color=1A1B2E&title_color=FF5FA2&text_color=F8E8F0&custom_title=%E2%9A%A1%20most%20used" alt="top languages"/>
+  <img src="assets/langs.svg" alt="top languages"/>
 </p>
 
 ---
